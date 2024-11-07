@@ -6,56 +6,113 @@ namespace ParkeringsApp
     public class Parkeringshus
     {
         private const int TotalaPlatser = 25;
-        private List<Fordon> fordon = new List<Fordon>(new Fordon[TotalaPlatser]);
+        private List<Fordon>[] fordon = new List<Fordon>[TotalaPlatser];
 
-        // Parkera fordon på en ledig plats
-        public string ParkeraFordon(Fordon fordon, double varaktighet)
+        public Parkeringshus()
         {
-            double storlek = fordon.FåStorlek();
+            // Initialisera varje parkeringsplats som en tom lista
+            for (int i = 0; i < TotalaPlatser; i++)
+            {
+                fordon[i] = new List<Fordon>();
+            }
+        }
+
+        // Parkera ett fordon på en ledig plats
+        public string ParkeraFordon(Fordon fordonAttParkera, double varaktighet)
+        {
+            double storlek = fordonAttParkera.FåStorlek();
             int startIndex = HittaLedigPlats(storlek);
 
             if (startIndex != -1)
             {
-                // Parkera fordonet på den hittade platsen
-                for (int i = 0; i < storlek; i++)
-                {
-                    this.fordon[startIndex + i] = fordon;  // Ta upp flera platser om det behövs
-                }
+                fordonAttParkera.Parkeringstid = varaktighet;  // Sätt parkeringstid
 
-                fordon.Parkeringstid = varaktighet;  // Sätt parkeringstiden
-                return $"Parkerat på plats {startIndex + 1}";
+                if (storlek == 0.5)  // Motorcykel (0.5 plats)
+                {
+                    // Försök att parkera den första motorcykeln eller den andra på samma plats
+                    for (int i = startIndex; i < TotalaPlatser; i++)
+                    {
+                        if (fordon[i].Count < 2) // Kontrollera om det finns plats för en motorcykel till (upp till 2 per plats)
+                        {
+                            // Lägg till motorcykeln på den aktuella platsen
+                            fordon[i].Add(fordonAttParkera);
+
+                            if (fordon[i].Count == 2)
+                            {
+                                return $"Båda motorcyklarna parkerade på plats {i + 1}";
+                            }
+                            return $"Första motorcykeln parkerad på plats {i + 1}";
+                        }
+                    }
+                }
+                else if (storlek == 2) // Buss (2 platser)
+                {
+                    if (startIndex + 1 < TotalaPlatser && fordon[startIndex].Count == 0 && fordon[startIndex + 1].Count == 0)
+                    {
+                        fordon[startIndex].Add(fordonAttParkera);
+                        fordon[startIndex + 1].Add(fordonAttParkera);
+                        return $"Buss parkerad på plats {startIndex + 1} och {startIndex + 2}";
+                    }
+                }
+                else // Vanlig parkering för bil
+                {
+                    fordon[startIndex].Add(fordonAttParkera);
+                    return $"Parkerad på plats {startIndex + 1}";
+                }
             }
-            return "Ingen plats tillgänglig";
+            return "Ingen ledig plats";
         }
 
         // Hitta en ledig plats för ett fordon baserat på dess storlek
         private int HittaLedigPlats(double storlek)
         {
-            for (int i = 0; i < TotalaPlatser; i++)
+            if (storlek == 0.5) 
             {
-                if (KanPassa(storlek, i))
+                for (int i = 0; i < TotalaPlatser; i++)
                 {
-                    return i;  // Hittat en ledig plats
+                    // Kontrollera om platsen är helt ledig eller redan har en motorcykel
+                    // - Den inte är upptagen av en bil (som tar hela platsen)
+                    // - Den inte är upptagen av en buss (som tar två platser)
+                    if (fordon[i].Count == 0 || (fordon[i].Count == 1 && fordon[i][0].FåStorlek() == 0.5))
+                    {
+                        return i; // Hittade en giltig plats för motorcykeln
+                    }
                 }
             }
-            return -1;  // Ingen tillgänglig plats
+            else 
+            {
+                for (int i = 0; i < TotalaPlatser; i++)
+                {
+                    // En plats måste vara helt ledig för en bil eller buss
+                    if (fordon[i].Count == 0)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;  // Ingen ledig plats
         }
 
-        // Kolla om ett fordon kan passa på en viss plats baserat på storlek
+        
         private bool KanPassa(double storlek, int index)
         {
-            if (storlek == 1) // Storleken bilen tar plats = 1 PLATS
+            if (storlek == 1) // Bil (1 plats)
             {
-                return fordon[index] == null;  // Bil (1 plats)
+                return fordon[index].Count == 0;
             }
-            else if (storlek == 2) // Storleken den tar. Alltså buss tar 2 platser
+            else if (storlek == 2) // Buss (2 platser)
             {
-                // Buss (2 platser) måste också kolla om den andra platsen är ledig
-                return index + 1 < TotalaPlatser && fordon[index] == null && fordon[index + 1] == null;
+                // Buss behöver två  lediga platser
+                if (index + 1 < TotalaPlatser && fordon[index].Count == 0 && fordon[index + 1].Count == 0)
+                {
+                    return true;
+                }
+                return false;
             }
-            else if (storlek == 0.5) // Halv Plats
+            else if (storlek == 0.5) 
             {
-                return fordon[index] == null;  // Motorcykel (0.5 plats)
+                // En motorcykel kan passa om platsen inte är helt upptagen
+                return fordon[index].Count < 2;
             }
             return false;
         }
@@ -67,10 +124,12 @@ namespace ParkeringsApp
 
             for (int i = 0; i < TotalaPlatser; i++)
             {
-                if (fordon[i] != null)
+                if (fordon[i].Count > 0)
                 {
-                    Fordon v = fordon[i];
-                    Console.WriteLine($"Plats {i + 1}: {v.GetType().Name} {v.Registreringsnummer} {v.Färg}");
+                    foreach (var v in fordon[i])
+                    {
+                        Console.WriteLine($"Plats {i + 1}: {v.GetType().Name} {v.Registreringsnummer} {v.Färg}");
+                    }
                     finnsFordon = true;
                 }
             }
@@ -84,54 +143,75 @@ namespace ParkeringsApp
         // Checka ut ett fordon baserat på registreringsnummer och visa pris och parkeringstid
         public void CheckaUtFordon(string registreringsnummer)
         {
-            var fordon = this.fordon.Find(v => v.Registreringsnummer == registreringsnummer);
-            if (fordon != null)
+            for (int i = 0; i < TotalaPlatser; i++)
             {
-                double pris = fordon.BeräknaPris();  // Beräkna priset baserat på parkeringstiden
-                // Ta bort fordonet från parkeringen
-                for (int i = 0; i < fordon.FåStorlek(); i++)
+                var fordonAttTaBort = fordon[i].Find(v => v.Registreringsnummer == registreringsnummer);
+                if (fordonAttTaBort != null)
                 {
-                    this.fordon[this.fordon.IndexOf(fordon) + i] = null;  // Ta bort fordonet
-                }
+                    double pris = fordonAttTaBort.BeräknaPris();
+                    fordon[i].Remove(fordonAttTaBort);  // Ta bort fordonet
 
-                Console.WriteLine($"Fordon med registreringsnummer {registreringsnummer} checkades ut.");
-                Console.WriteLine($"Parkeringstid: {fordon.Parkeringstid} sekunder.");
-                Console.WriteLine($"Totalt att betala: {pris} kr");
+                    Console.WriteLine($"Fordon med registreringsnummer {registreringsnummer} checkades ut.");
+                    Console.WriteLine($"Parkeringstid: {fordonAttTaBort.Parkeringstid} sekunder.");
+                    Console.WriteLine($"Totalt att betala: {pris} SEK");
+                    return;
+                }
             }
-            else
-            {
-                Console.WriteLine("Fordonet hittades inte.");
-            }
+            Console.WriteLine("Fordonet hittades inte.");
         }
 
-        // Visar parkeringens status med färgkodade platser
+        // Visa parkeringshusets status med färgkodade platser
         public void VisaParkering()
         {
             Console.Clear();
             Console.WriteLine("Parkeringshus Status:");
 
-            char rad = 'A'; // Startar först med rad A sen B, C, D, E
+            char rad = 'A'; // Starta med rad A, sen B, C, D, E
             for (int i = 0; i < TotalaPlatser; i++)
             {
-                // Om det är en ny rad, skriv ut radbokstaven och platsnummer
+                // Om det är en ny rad, skriv ut radens bokstav och platsnummer
                 if (i % 5 == 0 && i != 0)
                 {
-                    rad++;  // Går vidare till nästa rad
+                    rad++;  // Gå vidare till nästa rad
                 }
 
-                // Kolla om platsen är ledig eller upptagen
-                if (fordon[i] == null)
+                // Kontrollera antalet fordon på platsen
+                if (fordon[i].Count == 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;  // Ledig plats
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write($"[{rad}{(i % 5) + 1}] ");
+                }
+                else if (fordon[i].Count == 1 && fordon[i][0].FåStorlek() == 0.5)
+                {
+                    // En motorcykel: halva gul, halva grön
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write($"[{rad}");
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write($"{(i % 5) + 1}");  
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("] "); // ] är grön
+                }
+                else if (fordon[i].Count == 2 && fordon[i][0].FåStorlek() == 0.5 && fordon[i][1].FåStorlek() == 0.5)
+                {
+                    // Två motorcyklar: hela gula
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write($"[{rad}{(i % 5) + 1}] ");
+                }
+                else if (fordon[i].Count == 2)
+                {
+                    // Buss eller bil parkering, hela platsen upptagen
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;  // Upptagen plats
+                    Console.ForegroundColor = ConsoleColor.Yellow;  // Helt upptagen plats
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
 
-                // Var femte plats, gör det ett radbyte
+                // Efter var femte plats, gör ett radbyte
                 if ((i + 1) % 5 == 0)
                 {
                     Console.WriteLine();

@@ -8,13 +8,13 @@
     {
         Registreringsnummer = registreringsnummer;
         Färg = färg;
-        Parkeringstid = 0;  //  parkeringstid
+        Parkeringstid = 0;  // Initialiserar parkeringstid
     }
 
     // Returnerar storleken för fordonet (1 = bil, 2 = buss, 0.5 = motorcykel)
     public abstract double FåStorlek();
 
-    // pris baserat på parkeringstiden
+    // Pris baserat på parkeringstiden
     public double BeräknaPris()
     {
         return Parkeringstid * 1.5;  // Pris per sekund
