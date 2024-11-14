@@ -14,8 +14,9 @@ namespace ParkeringsApp
                 Console.Clear();  // Töm skärmen varje gång huvudmenyn visas
                 Console.WriteLine("Välj meny:");
                 Console.WriteLine("1. Kundmeny");
-                Console.WriteLine("2. Adminmeny");
-                Console.WriteLine("3. Avsluta");
+                Console.WriteLine("2. ParkeringsVakt");
+                Console.WriteLine("3. Chef");
+                Console.WriteLine("4. Avsluta");
                 Console.Write("Välj alternativ: ");
                 string val = Console.ReadLine();
 
@@ -25,9 +26,12 @@ namespace ParkeringsApp
                         KundMeny();
                         break;
                     case "2":
-                        AdminMeny();
+                        ParkeringsVakt();
                         break;
                     case "3":
+                        Chef();
+                        break;
+                    case "4":
                         return;
                     default:
                         Console.WriteLine("Ogiltigt val, försök igen.");
@@ -64,52 +68,75 @@ namespace ParkeringsApp
                         break;
 
                 }
-                
+
             }
         }
 
-        private void AdminMeny()
+        private void Chef()
         {
             while (true)
             {
-                Console.Clear();  // Rensa skärmen när adminmenyn visas
-                Console.WriteLine("Adminmeny:");
-                Console.WriteLine("1. Se parkering");
-                Console.WriteLine("2. Se/redigera parkeringstid");
-                Console.WriteLine("3. Se fordonsinformation");
-                Console.WriteLine("4. Modifiera parkeringsplats");
-                Console.WriteLine("5. Hantera tilläggsavgifter");
-                Console.WriteLine("6. Tillbaka till huvudmenyn");
+                Console.Clear();
+                Console.WriteLine("Chef");
+                parkeringshus.VisaParkering();
+                Console.WriteLine("3. Tillbaka till huvudmenyn");
                 Console.Write("Välj alternativ: ");
                 string val = Console.ReadLine();
 
                 switch (val)
                 {
                     case "1":
-                        // Visa parkering med platsstatus
+                        
+                        break;
+                    case "2":
+                        
+                        break;
+                    case "3":
+                        return;
+                    default:
+                        Console.WriteLine("Ogiltigt val, försök igen.");
+                        break;
+                 }
+             }
+        }
+
+        private void ParkeringsVakt()
+        {
+            while (true)
+            {
+                Console.Clear();  // Rensa skärmen när adminmenyn visas
+                Console.WriteLine("ParkeringsVakt:");
+                parkeringshus.VisaParkering();
+                Console.WriteLine("1. Se/redigera parkeringstid");
+                Console.WriteLine("2. Se fordonsinformation");
+                Console.WriteLine("3. Modifiera parkeringsplats");
+                Console.WriteLine("4. Hantera tilläggsavgifter");
+                Console.WriteLine("5. Tillbaka till huvudmenyn");
+                Console.Write("Välj alternativ: ");
+                string val = Console.ReadLine();
+
+                switch (val)
+                {
+                    case "1":
+                        
                         parkeringshus.VisaParkering();
                         break;
                     case "2":
-                        // Kod för att se/redigera parkeringstid (är inte implementerat än)
+                        
                         break;
                     case "3":
-                        // Visa fordonsinformation för alla parkerade fordon
-                        parkeringshus.ListaFordons();  // Visa alla parkerade fordon
+                        parkeringshus.ListaFordons();  
                         break;
                     case "4":
-                        // Kod för att modifiera parkeringsplats (inte implementerat)
                         break;
                     case "5":
-                        // Kod för att hantera tilläggsavgifter (inte implementerat)
-                        break;
-                    case "6":
-                        return;  // Gå tillbaka till huvudmenyn
+                        return;  
                     default:
                         Console.WriteLine("Ogiltigt val, försök igen.");
                         break;
                 }
 
-                // Lägg till en paus innan man återvänder till menyn
+                
                 TillbakaTillMeny();
             }
         }
