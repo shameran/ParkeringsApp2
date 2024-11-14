@@ -184,9 +184,18 @@ namespace ParkeringsApp
                 else if (fordon[i].Count == 1 && fordon[i][0].FåStorlek() == 0.5)
                 {
                     // En motorcykel: halva gul, halva grön
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write($"[{rad}");
+                    if (fordon[i][0].SenastKund == true)
+                    {
+                        fordon[i][0].SenastKund = false;
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        
+                    }
 
+                    Console.Write($"[{rad}");
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write($"{(i % 5) + 1}");  
 
@@ -194,21 +203,51 @@ namespace ParkeringsApp
                     Console.Write("] "); // ] är grön
                 }
                 else if (fordon[i].Count == 2 && fordon[i][0].FåStorlek() == 0.5 && fordon[i][1].FåStorlek() == 0.5)
-                {
+                {   
+                    if(fordon[i][0].SenastKund == true )
+                    {
+                        fordon[i][0].SenastKund = false;
+                        Console.ForegroundColor = ConsoleColor.Cyan;                      
+                    }
                     // Två motorcyklar: hela gula
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
                 else if (fordon[i].Count == 2)
                 {
                     // Buss eller bil parkering, hela platsen upptagen
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    
+                    if (fordon[i][0].SenastKund == true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        if (fordon[(i + 1)][0].SenastKund == true)
+                        {
+                            fordon[i][0].SenastKund = false;
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;  // Helt upptagen plats
+                   
+                    if (fordon[i][0].SenastKund == true)
+                    {
+                        fordon[i][0].SenastKund = false;
+                        Console.ForegroundColor = ConsoleColor.Cyan;   
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;  // Helt upptagen plats
+                    }
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
+
                 }
 
                 // Efter var femte plats, gör ett radbyte
@@ -217,6 +256,7 @@ namespace ParkeringsApp
                     Console.WriteLine();
                 }
             }
+
 
             Console.ResetColor();  // Återställ färg
             Console.WriteLine();

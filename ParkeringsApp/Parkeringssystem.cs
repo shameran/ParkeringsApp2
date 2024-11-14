@@ -41,6 +41,7 @@ namespace ParkeringsApp
             while (true)
             {
                 Console.Clear();  // Rensa skärmen när kundmenyn visas
+                parkeringshus.VisaParkering();
                 Console.WriteLine("Kundmeny:");
                 Console.WriteLine("1. Check in");
                 Console.WriteLine("2. Check out");
@@ -61,7 +62,9 @@ namespace ParkeringsApp
                     default:
                         Console.WriteLine("Ogiltigt val, försök igen.");
                         break;
+
                 }
+                
             }
         }
 
@@ -147,8 +150,9 @@ namespace ParkeringsApp
 
             Console.Write("Ange hur länge du vill parkera (i sekunder): ");
             double varaktighet = double.Parse(Console.ReadLine());
-
+            Console.Clear();
             string resultat = parkeringshus.ParkeraFordon(fordon, varaktighet);
+            parkeringshus.VisaParkering();
             Console.WriteLine(resultat);
             TillbakaTillMeny();
         }
