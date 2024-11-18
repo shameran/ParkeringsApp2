@@ -227,70 +227,30 @@ public void CheckaUtFordon(string registreringsnummer)
                 else if (fordon[i].Count == 1 && fordon[i][0].FåStorlek() == 0.5)
                 {
                     // En motorcykel: halva gul, halva grön
-                    if (fordon[i][0].SenastKund == true)
-                    {
-                        fordon[i][0].SenastKund = false;
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        
-                    }
-
+                    SetParkeringFärg(fordon[i][0]);//Sätter fordons speciella fordons färg.
                     Console.Write($"[{rad}");
+
+                    //Andra halvan
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write($"{(i % 5) + 1}");  
-
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("] "); // ] är grön
                 }
                 else if (fordon[i].Count == 2 && fordon[i][0].FåStorlek() == 0.5 && fordon[i][1].FåStorlek() == 0.5)
-                {   
-                    if(fordon[i][0].SenastKund == true )
-                    {
-                        fordon[i][0].SenastKund = false;
-                        Console.ForegroundColor = ConsoleColor.Cyan;                      
-                    }
-                    // Två motorcyklar: hela gula
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    }
+                {
+                    SetParkeringFärg(fordon[i][0]);
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
                 else if (fordon[i].Count == 2)
                 {
                     // Buss eller bil parkering, hela platsen upptagen
-                    
-                    if (fordon[i][0].SenastKund == true)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        if (fordon[(i + 1)][0].SenastKund == true)
-                        {
-                            fordon[i][0].SenastKund = false;
-                        }
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    }
+                    SetParkeringFärg(fordon[i][0]);
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
                 else
                 {
-                   
-                    if (fordon[i][0].SenastKund == true)
-                    {
-                        fordon[i][0].SenastKund = false;
-                        Console.ForegroundColor = ConsoleColor.Cyan;   
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;  // Helt upptagen plats
-                    }
+                    SetParkeringFärg(fordon[i][0]);
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
-
                 }
 
                 // Efter var femte plats, gör ett radbyte
@@ -300,9 +260,53 @@ public void CheckaUtFordon(string registreringsnummer)
                 }
             }
 
-
             Console.ResetColor();  // Återställ färg
             Console.WriteLine();
+        }
+        //Ställer in färg baserat på fordonets färg
+        public void SetParkeringFärg(Fordon fordon)
+        {
+
+            switch (fordon.ParkeringStatus)
+            {
+                case "NyParkerad":
+                    fordon.ParkeringStatus = "Validerad";
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    break;
+
+                case "Validerad":
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+
+                case "Ogiltig":
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+
+
+                default:
+                    Console.ForegroundColor= ConsoleColor.Green;
+                    break;
+            }
+        }
+        //Function som ändrar status på ett fordon.
+        public void ConfigureParkeringStatus(Fordon fordon, string newStatus) 
+        {
+            switch (newStatus)
+            {
+                case "0" or "NyParkerad":
+                    fordon.ParkeringStatus = "NyParkerad";
+                    break;
+                case "1" or "Validerad":
+                    fordon.ParkeringStatus = "Validerad";
+                    break;
+                case "2" or "Ogiltig":
+                    fordon.ParkeringStatus = "Ogiltig";
+                    break;
+                default:
+                    fordon.ParkeringStatus= "Ledig";
+                    break;
+            }
+            return;
         }
     }
 }

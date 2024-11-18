@@ -193,6 +193,7 @@ namespace ParkeringsApp
             TillbakaTillMeny();
         }
 
+        
         private void TillbakaTillMeny()
         {
             Console.WriteLine("Tryck på en tangent för att gå tillbaka till menyn.");
