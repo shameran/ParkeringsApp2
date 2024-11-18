@@ -6,14 +6,14 @@ namespace ParkeringsApp
     public class Parkeringshus
     {
         private const int TotalaPlatser = 25;
-        private List<Fordon>[] fordon = new List<Fordon>[TotalaPlatser];
+        private List<Fordon>[] ParkeringsLista = new List<Fordon>[TotalaPlatser];
 
         public Parkeringshus()
         {
             // Initialisera varje parkeringsplats som en tom lista
             for (int i = 0; i < TotalaPlatser; i++)
             {
-                fordon[i] = new List<Fordon>();
+                ParkeringsLista[i] = new List<Fordon>();
             }
         }
 
@@ -31,11 +31,12 @@ namespace ParkeringsApp
                 {
                     for (int i = startIndex; i < TotalaPlatser; i++)
                     {
-                        if (fordon[i].Count < 2) // Om det finns plats för en till motorcykel
+                        if (ParkeringsLista[i].Count < 2) // Kontrollera om det finns plats för en motorcykel till (upp till 2 per plats)
                         {
-                            fordon[i].Add(fordonAttParkera);
+                            // Lägg till motorcykeln på den aktuella platsen
+                            ParkeringsLista[i].Add(fordonAttParkera);
 
-                            if (fordon[i].Count == 2)
+                            if (ParkeringsLista[i].Count == 2)
                             {
                                 return $"Båda motorcyklarna parkerade på plats {i + 1} ({(char)('A' + i / 5)}{(i % 5) + 1})";
                             }
@@ -47,6 +48,7 @@ namespace ParkeringsApp
                 {
                     // Försök att hitta två intilliggande lediga platser för bussen på samma rad
                     for (int i = 0; i < TotalaPlatser - 1; i++)  // Vi letar efter ett par platser
+                    if (startIndex + 1 < TotalaPlatser && ParkeringsLista[startIndex].Count == 0 && ParkeringsLista[startIndex + 1].Count == 0)
                     {
                         // Kontrollera att vi inte korsar radgränser
                         if ((i % 5 != 4) && fordon[i].Count == 0 && fordon[i + 1].Count == 0)
@@ -74,8 +76,8 @@ namespace ParkeringsApp
                 }
                 else // Vanlig parkering för bil
                 {
-                    fordon[startIndex].Add(fordonAttParkera);
-                    return $"Parkerad på plats {startIndex + 1} ({(char)('A' + startIndex / 5)}{(startIndex % 5) + 1})";
+                    ParkeringsLista[startIndex].Add(fordonAttParkera);
+                    return $"Parkerad på plats {startIndex + 1}";
                 }
             }
             return "Ingen ledig plats";  // Om ingen plats hittas för något fordon
@@ -88,7 +90,10 @@ namespace ParkeringsApp
             {
                 for (int i = 0; i < TotalaPlatser; i++)
                 {
-                    if (fordon[i].Count == 0 || (fordon[i].Count == 1 && fordon[i][0].FåStorlek() == 0.5))
+                    // Kontrollera om platsen är helt ledig eller redan har en motorcykel
+                    // - Den inte är upptagen av en bil (som tar hela platsen)
+                    // - Den inte är upptagen av en buss (som tar två platser)
+                    if (ParkeringsLista[i].Count == 0 || (ParkeringsLista[i].Count == 1 && ParkeringsLista[i][0].FåStorlek() == 0.5))
                     {
                         return i; // Hittade en giltig plats för motorcykeln
                     }
@@ -109,7 +114,8 @@ namespace ParkeringsApp
             {
                 for (int i = 0; i < TotalaPlatser; i++)
                 {
-                    if (fordon[i].Count == 0)
+                    // En plats måste vara helt ledig för en bil eller buss
+                    if (ParkeringsLista[i].Count == 0)
                     {
                         return i;
                     }
@@ -123,12 +129,12 @@ namespace ParkeringsApp
         {
             if (storlek == 1) // Bil (1 plats)
             {
-                return fordon[index].Count == 0;
+                return ParkeringsLista[index].Count == 0;
             }
             else if (storlek == 2) // Buss (2 platser)
             {
                 // Buss behöver två  lediga platser
-                if (index + 1 < TotalaPlatser && fordon[index].Count == 0 && fordon[index + 1].Count == 0)
+                if (index + 1 < TotalaPlatser && ParkeringsLista[index].Count == 0 && ParkeringsLista[index + 1].Count == 0)
                 {
                     return true;
                 }
@@ -137,7 +143,7 @@ namespace ParkeringsApp
             else if (storlek == 0.5) 
             {
                 // En motorcykel kan passa om platsen inte är helt upptagen
-                return fordon[index].Count < 2;
+                return ParkeringsLista[index].Count < 2;
             }
             return false;
         }
@@ -149,9 +155,9 @@ namespace ParkeringsApp
 
             for (int i = 0; i < TotalaPlatser; i++)
             {
-                if (fordon[i].Count > 0)
+                if (ParkeringsLista[i].Count > 0)
                 {
-                    foreach (var v in fordon[i])
+                    foreach (var v in ParkeringsLista[i])
                     {
                         Console.WriteLine($"Plats {i + 1}: {v.GetType().Name} {v.Registreringsnummer} {v.Färg}");
                     }
@@ -219,15 +225,15 @@ public void CheckaUtFordon(string registreringsnummer)
                 }
 
                 // Kontrollera antalet fordon på platsen
-                if (fordon[i].Count == 0)
+                if (ParkeringsLista[i].Count == 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
-                else if (fordon[i].Count == 1 && fordon[i][0].FåStorlek() == 0.5)
+                else if (ParkeringsLista[i].Count == 1 && ParkeringsLista[i][0].FåStorlek() == 0.5)
                 {
                     // En motorcykel: halva gul, halva grön
-                    SetParkeringFärg(fordon[i][0]);//Sätter fordons speciella fordons färg.
+                    SetParkeringFärg(ParkeringsLista[i][0]);//Sätter fordons speciella fordons färg.
                     Console.Write($"[{rad}");
 
                     //Andra halvan
@@ -236,20 +242,20 @@ public void CheckaUtFordon(string registreringsnummer)
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("] "); // ] är grön
                 }
-                else if (fordon[i].Count == 2 && fordon[i][0].FåStorlek() == 0.5 && fordon[i][1].FåStorlek() == 0.5)
+                else if (ParkeringsLista[i].Count == 2 && ParkeringsLista[i][0].FåStorlek() == 0.5 && ParkeringsLista[i][1].FåStorlek() == 0.5)
                 {
-                    SetParkeringFärg(fordon[i][0]);
+                    SetParkeringFärg(ParkeringsLista[i][0]);
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
-                else if (fordon[i].Count == 2)
+                else if (ParkeringsLista[i].Count == 2)
                 {
                     // Buss eller bil parkering, hela platsen upptagen
-                    SetParkeringFärg(fordon[i][0]);
+                    SetParkeringFärg(ParkeringsLista[i][0]);
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
                 else
                 {
-                    SetParkeringFärg(fordon[i][0]);
+                    SetParkeringFärg(ParkeringsLista[i][0]);
                     Console.Write($"[{rad}{(i % 5) + 1}] ");
                 }
 
@@ -263,6 +269,8 @@ public void CheckaUtFordon(string registreringsnummer)
             Console.ResetColor();  // Återställ färg
             Console.WriteLine();
         }
+
+
         //Ställer in färg baserat på fordonets färg
         public void SetParkeringFärg(Fordon fordon)
         {
@@ -303,8 +311,7 @@ public void CheckaUtFordon(string registreringsnummer)
                     fordon.ParkeringStatus = "Ogiltig";
                     break;
                 default:
-                    fordon.ParkeringStatus= "Ledig";
-                    break;
+                    return;
             }
             return;
         }

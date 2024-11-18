@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 public class Buss : Fordon
 {
     public int AntalPassagerare { get; set; }
-
     public Buss(string registreringsnummer, string färg, int antalPassagerare)
-        : base(registreringsnummer, färg)
+    : base(registreringsnummer, färg )
     {
         AntalPassagerare = antalPassagerare;
     }
