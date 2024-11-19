@@ -86,18 +86,18 @@ namespace ParkeringsApp
                 switch (val)
                 {
                     case "1":
-                        
+
                         break;
                     case "2":
-                        
+
                         break;
                     case "3":
                         return;
                     default:
                         Console.WriteLine("Ogiltigt val, försök igen.");
                         break;
-                 }
-             }
+                }
+            }
         }
 
         private void ParkeringsVakt()
@@ -111,33 +111,173 @@ namespace ParkeringsApp
                 Console.WriteLine("2. Se fordonsinformation");
                 Console.WriteLine("3. Modifiera parkeringsplats");
                 Console.WriteLine("4. Hantera tilläggsavgifter");
-                Console.WriteLine("5. Tillbaka till huvudmenyn");
+                Console.WriteLine("5. Hantera böter");
+                Console.WriteLine("6. Tillbaka till huvudmenyn");
                 Console.Write("Välj alternativ: ");
                 string val = Console.ReadLine();
 
                 switch (val)
                 {
                     case "1":
-                        
                         parkeringshus.VisaParkering();
                         break;
                     case "2":
-                        
+                        // Funktion för att visa fordonsinformation
                         break;
                     case "3":
-                        parkeringshus.ListaFordons();  
+                        ModifieraParkeringsplats();  // Nytt alternativ för att modifiera parkeringsplats
                         break;
                     case "4":
+                        // Funktion för att hantera tilläggsavgifter
                         break;
                     case "5":
-                        return;  
+                        HanteraBöter();  // Hantera böter
+                        break;
+                    case "6":
+                        return;
                     default:
                         Console.WriteLine("Ogiltigt val, försök igen.");
                         break;
                 }
 
-                
                 TillbakaTillMeny();
+            }
+        }
+
+        //  (flytta eller ta bort fordon)
+        private void ModifieraParkeringsplats()
+        {
+            Console.Clear();
+            Console.WriteLine("Modifiera Parkeringsplats");
+            Console.WriteLine("1. Flytta fordon");
+            Console.WriteLine("2. Ta bort fordon från parkeringen");
+            Console.Write("Välj alternativ: ");
+            string val = Console.ReadLine();
+
+            switch (val)
+            {
+                case "1":
+                    FlyttaFordon();
+                    break;
+                case "2":
+                    TaBortFordon();
+                    break;
+                default:
+                    Console.WriteLine("Ogiltigt val.");
+                    break;
+            }
+        }
+
+        // Flytta fordon till en annan parkeringsplats
+        private void FlyttaFordon()
+        {
+            Console.Clear();
+            Console.Write("Ange registreringsnummer för fordonet du vill flytta: ");
+            string registreringsnummer = Console.ReadLine();
+            Console.Write("Ange ny parkeringsplats (t.ex. A1, B2): ");
+            string nyPlats = Console.ReadLine().ToUpper();  
+
+            
+            int platsIndex = OmvandlaPlatsTillIndex(nyPlats);
+
+            if (platsIndex != -1)  // Om platsen är giltig
+            {
+                if (parkeringshus.FlyttaFordon(registreringsnummer, platsIndex))
+                {
+                    Console.WriteLine($"Fordonet {registreringsnummer} har flyttats till {nyPlats}.");
+                }
+                else
+                {
+                    Console.WriteLine("Fordonet kunde inte flyttas. Kontrollera registreringsnumret och parkeringens tillgänglighet.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ogiltig plats. Vänligen ange en giltig plats (t.ex. A1, B2).");
+            }
+
+            TillbakaTillMeny();
+        }
+
+        
+        private int OmvandlaPlatsTillIndex(string plats)
+        {
+            if (plats.Length < 2) return -1; // Ogiltig plats om längden är för kort
+
+            char rad = plats[0];  
+            char kolumn = plats[1];  
+
+            // Kontrollera att raden är en giltig bokstav (A-E)
+            if (rad < 'A' || rad > 'E') return -1;
+
+            // Kontrollera att kolumnen är ett giltigt nummer (1-5)
+            if (kolumn < '1' || kolumn > '5') return -1;
+
+            // Omvandla raden till ett index
+            int radIndex = rad - 'A';
+
+            // Omvandla kolumnen till ett index 
+            int kolumnIndex = kolumn - '1';
+
+            // totala indexet i listan 
+            int platsIndex = radIndex * 5 + kolumnIndex;
+            return platsIndex;
+        }
+
+
+
+        
+        private void TaBortFordon()
+        {
+            Console.Clear();
+            Console.Write("Ange registreringsnummer för fordonet du vill ta bort: ");
+            string registreringsnummer = Console.ReadLine();
+
+            
+            if (parkeringshus.TaBortFordon(registreringsnummer))
+            {
+                Console.WriteLine($"Fordonet {registreringsnummer} har tagits bort från parkeringen.");
+            }
+            else
+            {
+                Console.WriteLine("Fordonet kunde inte tas bort. Kontrollera registreringsnumret.");
+            }
+            TillbakaTillMeny();
+        }
+
+        
+        private void HanteraBöter()
+        {
+            Console.Clear();
+            Console.WriteLine("Hantera böter för ett fordon");
+            Console.Write("Ange registreringsnummer för fordonet: ");
+            string registreringsnummer = Console.ReadLine();
+
+            Console.WriteLine("Vill du (1) Lägga till, (2) Modifiera eller (3) Ta bort böter?");
+            string val = Console.ReadLine();
+            double bötesbelopp = 0;
+
+            if (val == "1" || val == "2")
+            {
+                Console.Write("Ange belopp: ");
+                bötesbelopp = double.Parse(Console.ReadLine());
+            }
+
+            if (val == "1")
+            {
+                parkeringshus.LäggTillBöter(registreringsnummer, bötesbelopp);
+            }
+            else if (val == "2")
+            {
+                parkeringshus.ModifieraBöter(registreringsnummer, bötesbelopp);
+            }
+            else if (val == "3")
+            {
+                parkeringshus.TaBortBöter(registreringsnummer);
+            }
+            else
+            {
+                Console.WriteLine("Ogiltigt val.");
             }
         }
 
@@ -193,11 +333,10 @@ namespace ParkeringsApp
             TillbakaTillMeny();
         }
 
-        
         private void TillbakaTillMeny()
         {
             Console.WriteLine("Tryck på en tangent för att gå tillbaka till menyn.");
             Console.ReadKey();
         }
     }
-}   
+}

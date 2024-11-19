@@ -4,9 +4,10 @@
     public string Färg { get; set; }
     public double Parkeringstid { get; set; }  // Tid i sekunder
     public List<double> ParkingIndex { get; set; } //Spara undan Index för ParkeringsLista
-    public string ParkingDisplay { get; set; } // Sparar den visuella parkeringplatsen t'ex A1, B1
-    public string ParkeringStatus { get; set; } // "Nyparkerad" | "Validerad" | "Ogiltig" | Kan användas för att sätt färger
+    public string ParkingDisplay { get; set; } // Sparar den visuella parkeringplatsen t.ex. A1, B1
+    public string ParkeringStatus { get; set; } // "NyParkerad" | "Validerad" | "Ogiltig"
     public double ParkeringsKostnad { get; set; } // Samlar totala parkering Kostnad
+    public double Böter { get; set; }  // Lägg till en ny egenskap för böter
 
     public Fordon(string registreringsnummer, string färg)
     {
@@ -15,9 +16,7 @@
         Parkeringstid = 0;  // Initialiserar parkeringstid
         ParkeringStatus = "NyParkerad";
         ParkingDisplay = "##";
-
-
-
+        Böter = 0;  // Initialisera böter till 0
     }
 
     // Returnerar storleken för fordonet (1 = bil, 2 = buss, 0.5 = motorcykel)
@@ -26,8 +25,6 @@
     // Pris baserat på parkeringstiden
     public double BeräknaPris()
     {
-        return Parkeringstid * 1.5;  // Pris per sekund
+        return Parkeringstid * 1.5 + Böter;  // Lägg till böter i den totala kostnaden
     }
-  
-    
 }

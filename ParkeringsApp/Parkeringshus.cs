@@ -17,6 +17,113 @@ namespace ParkeringsApp
             }
         }
 
+        // Metod för att lägga till böter på ett fordon
+        public void LäggTillBöter(string registreringsnummer, double bötesbelopp)
+        {
+            foreach (var lista in ParkeringsLista)
+            {
+                var fordon = lista.Find(f => f.Registreringsnummer == registreringsnummer);
+                if (fordon != null)
+                {
+                    fordon.Böter += bötesbelopp;  
+                    Console.WriteLine($"Böter på {fordon.Registreringsnummer} har lagts till: {bötesbelopp} SEK");
+                    return;
+                }
+            }
+            Console.WriteLine("Fordonet hittades inte.");
+        }
+
+        
+        public void ModifieraBöter(string registreringsnummer, double nyttBötesbelopp)
+        {
+            foreach (var lista in ParkeringsLista)
+            {
+                var fordon = lista.Find(f => f.Registreringsnummer == registreringsnummer);
+                if (fordon != null)
+                {
+                    fordon.Böter = nyttBötesbelopp; 
+                    Console.WriteLine($"Böter för {fordon.Registreringsnummer} har modifierats till: {nyttBötesbelopp} SEK");
+                    return;
+                }
+            }
+            Console.WriteLine("Fordonet hittades inte.");
+        }
+
+        
+        public void TaBortBöter(string registreringsnummer)
+        {
+            foreach (var lista in ParkeringsLista)
+            {
+                var fordon = lista.Find(f => f.Registreringsnummer == registreringsnummer);
+                if (fordon != null)
+                {
+                    fordon.Böter = 0;  // Sätt bötesbeloppet till 0
+                    Console.WriteLine($"Böter för {fordon.Registreringsnummer} har tagits bort.");
+                    return;
+                }
+            }
+            Console.WriteLine("Fordonet hittades inte.");
+        }
+        // Flytta ett fordon från en plats till en annan
+        public bool FlyttaFordon(string registreringsnummer, int nyPlatsIndex)
+        {
+            // Hitta fordonet på den gamla platsen
+            for (int i = 0; i < TotalaPlatser; i++)
+            {
+                var fordon = ParkeringsLista[i].Find(f => f.Registreringsnummer == registreringsnummer);
+                if (fordon != null)
+                {
+                    
+                    ParkeringsLista[i].Remove(fordon);
+
+                    // Lägg till fordonet på den nya platsen
+                    if (ParkeringsLista[nyPlatsIndex].Count == 0)  // Kontrollera om den nya platsen är ledig
+                    {
+                        ParkeringsLista[nyPlatsIndex].Add(fordon);
+                        // Uppdatera ParkingDisplay för att visa den nya platsen
+                        fordon.ParkingDisplay = IndexTillPlats(nyPlatsIndex);
+                        return true; 
+                    }
+                    else
+                    {
+                        // Om platsen är upptagen, sätt tillbaka fordonet
+                        ParkeringsLista[i].Add(fordon);
+                        return false;  
+                    }
+                }
+            }
+            return false; 
+        }
+
+        
+        private string IndexTillPlats(int index)
+        {
+            char rad = (char)('A' + (index / 5));  // Omvandla index till rad 
+            int kolumn = (index % 5) + 1;  // Omvandla index till kolumn 
+            return $"{rad}{kolumn}";
+        }
+
+
+       
+        public bool TaBortFordon(string registreringsnummer)
+        {
+            for (int i = 0; i < TotalaPlatser; i++)
+            {
+                var fordon = ParkeringsLista[i].Find(f => f.Registreringsnummer == registreringsnummer);
+
+                if (fordon != null)
+                {
+                    // Ta bort fordonet från den aktuella platsen
+                    ParkeringsLista[i].Remove(fordon);
+                    Console.WriteLine($"Fordon med registreringsnummer {registreringsnummer} har tagits bort från parkeringen.");
+                    return true;  // Fordonet togs bort
+                }
+            }
+            Console.WriteLine("Fordonet hittades inte.");
+            return false;  // Fordonet hittades inte
+        }
+
+
 
         public string ParkeraFordon(Fordon fordonAttParkera, double varaktighet)
         {
