@@ -104,7 +104,7 @@ namespace ParkeringsApp
         {
             while (true)
             {
-                Console.Clear();  // Rensa skärmen när adminmenyn visas
+                Console.Clear(); 
                 Console.WriteLine("ParkeringsVakt:");
                 parkeringshus.VisaParkering();
                 Console.WriteLine("1. Se/redigera parkeringstid");
@@ -122,16 +122,16 @@ namespace ParkeringsApp
                         parkeringshus.VisaParkering();
                         break;
                     case "2":
-                        // Funktion för att visa fordonsinformation
+                        parkeringshus.ListaFordons();
                         break;
                     case "3":
-                        ModifieraParkeringsplats();  // Nytt alternativ för att modifiera parkeringsplats
+                        ModifieraParkeringsplats();  
                         break;
                     case "4":
                         // Funktion för att hantera tilläggsavgifter
                         break;
                     case "5":
-                        HanteraBöter();  // Hantera böter
+                        HanteraBöter();  
                         break;
                     case "6":
                         return;
@@ -144,7 +144,7 @@ namespace ParkeringsApp
             }
         }
 
-        //  (flytta eller ta bort fordon)
+        
         private void ModifieraParkeringsplats()
         {
             Console.Clear();
@@ -168,7 +168,7 @@ namespace ParkeringsApp
             }
         }
 
-        // Flytta fordon till en annan parkeringsplats
+        
         private void FlyttaFordon()
         {
             Console.Clear();
@@ -180,7 +180,7 @@ namespace ParkeringsApp
             
             int platsIndex = OmvandlaPlatsTillIndex(nyPlats);
 
-            if (platsIndex != -1)  // Om platsen är giltig
+            if (platsIndex != -1)  
             {
                 if (parkeringshus.FlyttaFordon(registreringsnummer, platsIndex))
                 {
@@ -202,15 +202,15 @@ namespace ParkeringsApp
         
         private int OmvandlaPlatsTillIndex(string plats)
         {
-            if (plats.Length < 2) return -1; // Ogiltig plats om längden är för kort
+            if (plats.Length < 2) return -1; 
 
             char rad = plats[0];  
             char kolumn = plats[1];  
 
-            // Kontrollera att raden är en giltig bokstav (A-E)
+            // Kontrollera att raden är en giltig bokstav 
             if (rad < 'A' || rad > 'E') return -1;
 
-            // Kontrollera att kolumnen är ett giltigt nummer (1-5)
+            // Kontrollera att kolumnen är ett giltigt nummer 
             if (kolumn < '1' || kolumn > '5') return -1;
 
             // Omvandla raden till ett index
@@ -283,7 +283,7 @@ namespace ParkeringsApp
 
         private void ParkeraFordon()
         {
-            Console.Clear();  // Rensa skärmen innan parkering
+            Console.Clear();  
             Console.Write("Ange registreringsnummer: ");
             string registreringsnummer = Console.ReadLine();
             Console.Write("Ange färg: ");
@@ -326,7 +326,7 @@ namespace ParkeringsApp
 
         private void CheckaUtFordon()
         {
-            Console.Clear();  // Rensa skärmen innan check out
+            Console.Clear();  
             Console.Write("Ange registreringsnummer för att checka ut: ");
             string registreringsnummer = Console.ReadLine();
             parkeringshus.CheckaUtFordon(registreringsnummer);
