@@ -396,10 +396,13 @@ public void CheckaUtFordon(string registreringsnummer)
                 case "Ogiltig":
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-
+                case "NyParkerad+":
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    fordon.ParkeringStatus = "NyParkerad";
+                    break;
 
                 default:
-                    Console.ForegroundColor= ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     break;
             }
         }
