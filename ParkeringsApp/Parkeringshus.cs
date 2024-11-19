@@ -51,11 +51,11 @@ namespace ParkeringsApp
                     if (startIndex + 1 < TotalaPlatser && ParkeringsLista[startIndex].Count == 0 && ParkeringsLista[startIndex + 1].Count == 0)
                     {
                         // Kontrollera att vi inte korsar radgränser
-                        if ((i % 5 != 4) && fordon[i].Count == 0 && fordon[i + 1].Count == 0)
+                        if ((i % 5 != 4) && ParkeringsLista[i].Count == 0 && ParkeringsLista[i + 1].Count == 0)
                         {
-                            // Parkera bussen på dessa två platser
-                            fordon[i].Add(fordonAttParkera);
-                            fordon[i + 1].Add(fordonAttParkera);
+                                // Parkera bussen på dessa två platser
+                            ParkeringsLista[i].Add(fordonAttParkera);
+                            ParkeringsLista[i + 1].Add(fordonAttParkera);
 
                             // Vi har nu parkerat bussen på dessa två platser
                             return $"Buss parkerad på plats {i + 1} och {i + 2} ({(char)('A' + i / 5)}{(i % 5) + 1}, {(char)('A' + (i + 1) / 5)}{((i + 1) % 5) + 1})";
@@ -65,10 +65,10 @@ namespace ParkeringsApp
                     // Om inga lediga intilliggande platser finns på samma rad, försök på nästa rad
                     for (int i = 5; i < TotalaPlatser - 1; i++)  // Börja på index 5 för att söka på andra raden
                     {
-                        if ((i % 5 != 4) && fordon[i].Count == 0 && fordon[i + 1].Count == 0)
+                        if ((i % 5 != 4) && ParkeringsLista[i].Count == 0 && ParkeringsLista[i + 1].Count == 0)
                         {
-                            fordon[i].Add(fordonAttParkera);
-                            fordon[i + 1].Add(fordonAttParkera);
+                            ParkeringsLista[i].Add(fordonAttParkera);
+                            ParkeringsLista[i + 1].Add(fordonAttParkera);
                             return $"Buss parkerad på plats {i + 1} och {i + 2} ({(char)('A' + i / 5)}{(i % 5) + 1}, {(char)('A' + (i + 1) / 5)}{((i + 1) % 5) + 1})";
                         }
                     }
@@ -104,7 +104,7 @@ namespace ParkeringsApp
                 for (int i = 0; i < TotalaPlatser - 1; i++)  // Vi letar efter ett par platser
                 {
                     // Kontrollera om båda platserna på samma rad är lediga
-                    if ((i % 5 != 4) && fordon[i].Count == 0 && fordon[i + 1].Count == 0)
+                    if ((i % 5 != 4) && ParkeringsLista[i].Count == 0 && ParkeringsLista[i + 1].Count == 0)
                     {
                         return i;  // Hittade två intilliggande lediga platser
                     }
@@ -176,18 +176,18 @@ public void CheckaUtFordon(string registreringsnummer)
 {
     for (int i = 0; i < TotalaPlatser; i++)
     {
-        var fordonAttTaBort = fordon[i].Find(v => v.Registreringsnummer == registreringsnummer);
+        var fordonAttTaBort = ParkeringsLista[i].Find(v => v.Registreringsnummer == registreringsnummer);
 
         if (fordonAttTaBort != null)
         {
             // Kontrollera om det är en buss som upptar två platser
             if (fordonAttTaBort.FåStorlek() == 2)
             {
-                // För en buss, ta bort från både den aktuella och nästa plats
-                fordon[i].Remove(fordonAttTaBort);  // Ta bort från första platsen
+                        // För en buss, ta bort från både den aktuella och nästa plats
+                ParkeringsLista[i].Remove(fordonAttTaBort);  // Ta bort från första platsen
                 if (i + 1 < TotalaPlatser) 
                 {
-                    fordon[i + 1].Remove(fordonAttTaBort);  // Ta bort från andra platsen
+                    ParkeringsLista[i + 1].Remove(fordonAttTaBort);  // Ta bort från andra platsen
                 }
                 
                 Console.WriteLine($"Buss med registreringsnummer {registreringsnummer} checkades ut från plats {i + 1} och {i + 2}.");
@@ -195,7 +195,7 @@ public void CheckaUtFordon(string registreringsnummer)
             else
             {
                 // För vanliga fordon (motorcykel, bil), ta bort från en plats
-                fordon[i].Remove(fordonAttTaBort);  // Ta bort fordonet från den aktuella platsen
+                ParkeringsLista[i].Remove(fordonAttTaBort);  // Ta bort fordonet från den aktuella platsen
                 Console.WriteLine($"Fordon med registreringsnummer {registreringsnummer} checkades ut från plats {i + 1}.");
             }
 

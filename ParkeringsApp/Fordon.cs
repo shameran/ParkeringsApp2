@@ -6,6 +6,8 @@
     public List<double> ParkingIndex { get; set; } //Spara undan Index för ParkeringsLista
     public string ParkingDisplay { get; set; } // Sparar den visuella parkeringplatsen t'ex A1, B1
     public string ParkeringStatus { get; set; } // "Nyparkerad" | "Validerad" | "Ogiltig" | Kan användas för att sätt färger
+    public double ParkeringsKostnad { get; set; } // Samlar totala parkering Kostnad
+
     public Fordon(string registreringsnummer, string färg)
     {
         Registreringsnummer = registreringsnummer;
