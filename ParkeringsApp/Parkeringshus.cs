@@ -71,27 +71,65 @@ namespace ParkeringsApp
             for (int i = 0; i < TotalaPlatser; i++)
             {
                 var fordon = ParkeringsLista[i].Find(f => f.Registreringsnummer == registreringsnummer);
+
+
+
                 if (fordon != null)
                 {
 
 
-                    ParkeringsLista[i].Remove(fordon);
-
                     // Lägg till fordonet på den nya platsen
                     if (ParkeringsLista[nyPlatsIndex].Count == 0)  // Kontrollera om den nya platsen är ledig
                     {
-                        ParkeringsLista[nyPlatsIndex].Add(fordon);
+                        if (fordon.FåStorlek() == 2)
+                        {
+                            List<int> ParkingIndexCopy = new List<int>(fordon.ParkingIndex)
+                            foreach (int index in ParkingIndexCopy)
+                            {
+                                fordon.ParkingIndex.Remove(index);
+                                ParkeringsLista[index].Remove(fordon);
+                                
+                            }
+                            
 
-                        // Uppdatera ParkingDisplay för att visa den nya platsen
-                        fordon.ParkingDisplay = IndexTillPlats(nyPlatsIndex);
-                        return true; 
+                            foreach(string Display in fordon.ParkingDisplay)
+                            {
+                                fordon.ParkingDisplay.Remove(Display);
+                                fordon.ParkingDisplay.Add()
+                                
+                            }
+
+                            fordon.ParkingIndex.Add(nyPlatsIndex);
+                            fordon.ParkingIndex.Add(nyPlatsIndex + 1);
+                            
+                            ParkeringsLista[nyPlatsIndex].Add(fordon);
+                            ParkeringsLista[nyPlatsIndex].Add(fordon);
+                            fordon.ParkingIndex.Add(nyPlatsIndex);
+
+                            return true;
+                        }
+                        else
+                        {
+                            //Ta bort fordonet
+                            ParkeringsLista[i].Remove(fordon);
+                            fordon.ParkingIndex.Remove(i);
+                            //Lägga till ny plats
+                            ParkeringsLista[nyPlatsIndex].Add(fordon);
+                            fordon.ParkingIndex.Add(nyPlatsIndex);
+
+                            // Uppdatera ParkingDisplay för att visa den nya platsen
+                            fordon.ParkingDisplay = IndexTillPlats(nyPlatsIndex);
+                            return true;
+
+                        }
                     }
                     else
                     {
                         // Om platsen är upptagen, sätt tillbaka fordonet
-                        ParkeringsLista[i].Add(fordon);
-                        return false;  
+                        //ParkeringsLista[i].Add(fordon);
+                        return false;
                     }
+                    
                 }
             }
             return false; 
@@ -296,7 +334,6 @@ namespace ParkeringsApp
             for (int i = 0; i < TotalaPlatser; i++)
             {
                 var fordonAttTaBort = ParkeringsLista[i].Find(v => v.Registreringsnummer == registreringsnummer);
-
                 if (fordonAttTaBort != null)
                 {
                     // Kontrollera om det är en buss som upptar två platser

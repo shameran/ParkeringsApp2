@@ -4,7 +4,7 @@
     public string Färg { get; set; }
     public double Parkeringstid { get; set; }  // Tid i sekunder
     public List<int> ParkingIndex { get; set; } //Spara undan Index för ParkeringsLista
-    public string ParkingDisplay { get; set; } // Sparar den visuella parkeringplatsen t.ex. A1, B1
+    public List <string> ParkingDisplay { get; set; } // Sparar den visuella parkeringplatsen t.ex. A1, B1
     public string ParkeringStatus { get; set; } // "NyParkerad" | "Validerad" | "Ogiltig"
     public double ParkeringsKostnad { get; set; } // Samlar totala parkering Kostnad
     public double Böter { get; set; }  // Lägg till en ny egenskap för böter
