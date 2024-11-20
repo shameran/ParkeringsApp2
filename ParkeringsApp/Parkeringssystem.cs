@@ -127,12 +127,9 @@ namespace ParkeringsApp
                         ModifieraParkeringsplats();  
                         break;
                     case "4":
-                        // Funktion för att hantera tilläggsavgifter
+                        HanteraBöter();
                         break;
                     case "5":
-                        HanteraBöter();  
-                        break;
-                    case "6":
                         return;
                     default:
                         Console.WriteLine("Ogiltigt val, försök igen.");
