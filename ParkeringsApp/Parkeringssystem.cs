@@ -110,9 +110,8 @@ namespace ParkeringsApp
                 Console.WriteLine("1. Se/redigera parkeringstid");
                 Console.WriteLine("2. Se fordonsinformation");
                 Console.WriteLine("3. Modifiera parkeringsplats");
-                Console.WriteLine("4. Hantera tilläggsavgifter");
-                Console.WriteLine("5. Hantera böter");
-                Console.WriteLine("6. Tillbaka till huvudmenyn");
+                Console.WriteLine("4. Hantera böter");
+                Console.WriteLine("5. Tillbaka till huvudmenyn");
                 Console.Write("Välj alternativ: ");
                 string val = Console.ReadLine();
 
