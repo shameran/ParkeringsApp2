@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkeringsApp", "ParkeringsApp\ParkeringsApp.csproj", "{C6DAA29F-53FC-47DB-8D79-5F16F42778B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParkeringsApp", "ParkeringsApp\ParkeringsApp.csproj", "{C6DAA29F-53FC-47DB-8D79-5F16F42778B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkeringshusTests", "TestProject1\ParkeringshusTests.csproj", "{D14E75A1-E342-4D12-B19F-60BCFA09918A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C6DAA29F-53FC-47DB-8D79-5F16F42778B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6DAA29F-53FC-47DB-8D79-5F16F42778B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6DAA29F-53FC-47DB-8D79-5F16F42778B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D14E75A1-E342-4D12-B19F-60BCFA09918A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D14E75A1-E342-4D12-B19F-60BCFA09918A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D14E75A1-E342-4D12-B19F-60BCFA09918A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D14E75A1-E342-4D12-B19F-60BCFA09918A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
